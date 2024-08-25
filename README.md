@@ -1,1 +1,1 @@
-# streaming_backend
+# Streaming app for videos - Backend
