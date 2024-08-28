@@ -126,7 +126,6 @@ const loginUser = asyncHandler(async (req, res) => {
     user._id
   );
 
-  // user.refreshToken = refreshToken;
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
@@ -199,22 +198,23 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     if (incomingRefreshToken !== user?.refreshToken)
       throw new ApiError(401, "Refresh token is expired or invalid.");
 
-    const { newAccessToken, newRefreshToken } =
-      await generateAccessAndRefreshTokens(user._id);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id
+    );
 
     const options = {
       httpOnly: true,
-      secured: true,
+      secure: true,
     };
 
     return res
-      .stauts(200)
-      .cookie("accessToken", tokens.newAccessToken)
-      .cookie("refreshToken", tokens.newRefreshToken)
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
       .json(
         new ApiResponse(
           200,
-          { newAccessToken, newRefreshToken },
+          { accessToken, refreshToken },
           "Tokens Refreshed successfully!"
         )
       );
@@ -390,11 +390,10 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 const getWatchHistory = asyncHandler(async (req, res) => {
   const user = await User.aggregate([
     {
-      $mathc: {
+      $match: {
         _id: new mongoose.Types.ObjectId(req.user._id),
       },
     },
-
     {
       $lookup: {
         from: "videos",
@@ -419,17 +418,19 @@ const getWatchHistory = asyncHandler(async (req, res) => {
               ],
             },
           },
+          {
+            $addFields: {
+              owner: { $arrayElemAt: ["$owner", 0] },
+            },
+          },
         ],
-      },
-      $addFields: {
-        owner: {
-          $first: "owner",
-        },
       },
     },
   ]);
 
-  console.log(user);
+  if (!user[0]) {
+    return res.status(404).json(new ApiResponse(404, null, "User not found"));
+  }
 
   return res
     .status(200)
