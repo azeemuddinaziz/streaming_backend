@@ -262,13 +262,14 @@ const upadateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
-  const newAvatarLocalPath = req.file?.avatar[0]?.path;
+  console.log(req.file);
+  const newAvatarLocalPath = req.file?.path;
 
   if (!newAvatarLocalPath) throw new ApiError(400, "Avatar file not found!");
 
   const avatar = await uploadFileOnCloudinary(newAvatarLocalPath);
 
-  if (avatar.url) throw new ApiError(400, "Error uploading files.");
+  if (!avatar.url) throw new ApiError(400, "Error uploading files.");
 
   const user = await User.findByIdAndUpdate(
     req.user?._id,
@@ -286,14 +287,14 @@ const updateAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateCoverImage = asyncHandler(async (req, res) => {
-  const newCoverImageLocalPath = req.file?.coverImage[0]?.path;
+  const newCoverImageLocalPath = req.file?.path;
 
   if (!newCoverImageLocalPath)
     throw new ApiError(400, "coverImage file not found!");
 
   const coverImage = await uploadFileOnCloudinary(newCoverImageLocalPath);
 
-  if (coverImage.url) throw new ApiError(400, "Error uploading files.");
+  if (!coverImage.url) throw new ApiError(400, "Error uploading files.");
 
   const user = await User.findByIdAndUpdate(
     req.user?._id,

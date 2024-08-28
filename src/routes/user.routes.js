@@ -40,22 +40,12 @@ router.route("/changePassword").post(verifyJWT, changeCurrentPassword);
 
 router.route("/currentUser").post(verifyJWT, getCurrentUser);
 
-router.route("/updateAvatar").post(
-  upload.fields({
-    name: "avatar",
-    maxCount: 1,
-  }),
-  verifyJWT,
-  updateAvatar
-);
+router
+  .route("/updateAvatar")
+  .post(upload.single("avatar"), verifyJWT, updateAvatar);
 
-router.route("/updateCoverImage").post(
-  upload.fields({
-    name: "coverImage",
-    maxCount: 1,
-  }),
-  verifyJWT,
-  updateCoverImage
-);
+router
+  .route("/updateCoverImage")
+  .post(upload.single("coverImage"), verifyJWT, updateCoverImage);
 
 export default router;
