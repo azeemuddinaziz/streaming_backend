@@ -2,7 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import { User } from "../models/user.models.js";
-import { uploadFileOnCloudinary } from "../services/cloudinary.js";
+import {
+  uploadFileOnCloudinary,
+  deleteFilesOnCloudinary,
+} from "../services/cloudinary.js";
 import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -262,7 +265,6 @@ const upadateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
-  console.log(req.file);
   const newAvatarLocalPath = req.file?.path;
 
   if (!newAvatarLocalPath) throw new ApiError(400, "Avatar file not found!");
@@ -270,6 +272,8 @@ const updateAvatar = asyncHandler(async (req, res) => {
   const avatar = await uploadFileOnCloudinary(newAvatarLocalPath);
 
   if (!avatar.url) throw new ApiError(400, "Error uploading files.");
+
+  await deleteFilesOnCloudinary(req.user?.avatar);
 
   const user = await User.findByIdAndUpdate(
     req.user?._id,
@@ -295,6 +299,8 @@ const updateCoverImage = asyncHandler(async (req, res) => {
   const coverImage = await uploadFileOnCloudinary(newCoverImageLocalPath);
 
   if (!coverImage.url) throw new ApiError(400, "Error uploading files.");
+
+  await deleteFilesOnCloudinary(req.user.coverImage);
 
   const user = await User.findByIdAndUpdate(
     req.user?._id,
