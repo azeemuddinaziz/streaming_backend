@@ -1,8 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import aggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const commentSchema = new Schema(
-  { timestamps: true },
   {
     content: {
       type: String,
@@ -18,9 +17,10 @@ const commentSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-  }
+  },
+  { timestamps: true }
 );
 
-mongoose.plugin(mongooseAggregatePaginate());
+mongoose.plugin(aggregatePaginate);
 
 export const Comment = mongoose.model("Comment", commentSchema);
