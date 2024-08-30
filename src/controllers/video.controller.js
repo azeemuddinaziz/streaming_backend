@@ -7,6 +7,45 @@ import {
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
+const getAllVideos = asyncHandler(async (req, res) => {
+  //TODO: get all videos based on query, sort, pagination
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      query = {},
+      sortBy = "_id",
+      sortType = "asc",
+      userId,
+    } = req.query;
+
+    const pipeline = [
+      {
+        $match: {
+          $or: [
+            { title: { $regex: sanitize(query), $options: "i" } },
+            { description: { $regex: sanitize(query), $options: "i" } },
+          ],
+        },
+      },
+      { $sort: { [sortBy]: sortType === "asc" ? 1 : -1 } },
+    ];
+
+    const options = { page: parseInt(page), limit: parseInt(limit) };
+
+    const videos = await Video.aggregatePaginate(
+      Video.aggregate(pipeline),
+      options
+    );
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, videos, "Videos fetched successfully!"));
+  } catch (error) {
+    throw new ApiError(500, error || "Something went wrong.");
+  }
+});
+
 const publishAVideo = asyncHandler(async (req, res) => {
   // TODO: get video, upload to cloudinary, create video
 
@@ -107,8 +146,6 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
     if (!video) throw new ApiError(404, "Video not found.");
 
-    console.log(video.videoFile, video.thumbnail);
-
     await deleteFilesOnCloudinary(video.videoFile, "video");
     await deleteFilesOnCloudinary(video.thumbnail, "image");
 
@@ -146,4 +183,5 @@ export {
   updateVideo,
   deleteVideo,
   togglePublishStatus,
+  getAllVideos,
 };
