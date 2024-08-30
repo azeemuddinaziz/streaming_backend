@@ -61,7 +61,7 @@ const updateTweet = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    if (!tweet) throw new ApiError(400, "Failed to update tweet.");
+    if (!tweet) throw new ApiError(400, "Tweet not found.");
 
     return res
       .status(200)
@@ -74,4 +74,21 @@ const updateTweet = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTweet, getUserTweets, updateTweet };
+const deleteTweet = asyncHandler(async (req, res) => {
+  //TODO: delete tweet
+  try {
+    const { tweetId } = req.params;
+
+    if (!tweetId) throw new ApiError(400, "tweetId is required.");
+
+    await Tweet.deleteOne({ _id: tweetId });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Tweet deleted successfully."));
+  } catch (error) {
+    throw new ApiError(500, error || "Failed to delete tweet");
+  }
+});
+
+export { createTweet, getUserTweets, updateTweet, deleteTweet };
