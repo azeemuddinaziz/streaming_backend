@@ -11,7 +11,7 @@ const createTweet = asyncHandler(async (req, res) => {
     if (!content) throw new ApiError(400, "The fields are required.");
 
     const tweet = await Tweet.create({
-      owner: req.user,
+      owner: req.user?._id,
       content,
     });
 

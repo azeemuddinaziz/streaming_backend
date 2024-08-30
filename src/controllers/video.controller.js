@@ -80,7 +80,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     title,
     description,
     duration: cloudinaryVideo.duration,
-    owner: req.user,
+    owner: req.user?._id,
   });
 
   res
