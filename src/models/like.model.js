@@ -1,7 +1,6 @@
 import mongoose, { mongo, Schema } from "mongoose";
 
 const likeSchema = Schema(
-  { timestamps: true },
   {
     comment: {
       type: Schema.Types.ObjectId,
@@ -22,7 +21,8 @@ const likeSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-  }
+  },
+  { timestamps: true }
 );
 
 export const Like = mongoose.model("Like", likeSchema);
