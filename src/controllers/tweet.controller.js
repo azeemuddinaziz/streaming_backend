@@ -47,4 +47,31 @@ const getUserTweets = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTweet, getUserTweets };
+const updateTweet = asyncHandler(async (req, res) => {
+  //TODO: update tweet
+  try {
+    const { content } = req.body;
+    const { tweetId } = req.params;
+
+    if (!tweetId) throw new ApiError(200, "Tweet id is required.");
+
+    const tweet = await Tweet.findByIdAndUpdate(
+      tweetId,
+      { content },
+      { new: true }
+    );
+
+    if (!tweet) throw new ApiError(400, "Failed to update tweet.");
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, tweet, "Tweet updated successfully"));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error || "Something went wrong while updating tweet."
+    );
+  }
+});
+
+export { createTweet, getUserTweets, updateTweet };
