@@ -98,9 +98,97 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
   }
 });
 
+const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
+  // TODO: remove video from playlist
+  try {
+    const { playlistId, videoId } = req.params;
+    if (!playlistId || !videoId) {
+      throw new ApiError(400, "PlaylistId and VideoId are required.");
+    }
+
+    const playlist = await Playlist.findByIdAndUpdate(
+      playlistId,
+      { $pull: { videos: videoId } },
+      { new: true }
+    );
+    if (!playlist) {
+      throw new ApiError(400, "Error finding or adding videos to playlist.");
+    }
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          playlist,
+          "Video removed from playlist successfully."
+        )
+      );
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error.message ||
+        error ||
+        "Something went wrong while removing video from playlist"
+    );
+  }
+});
+
+const deletePlaylist = asyncHandler(async (req, res) => {
+  // TODO: delete playlist
+  try {
+    const { playlistId } = req.params;
+
+    if (!playlistId) throw new ApiError(400, "playlistId is required.");
+
+    await Playlist.deleteOne({ _id: playlistId });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Playlist deleted successfully."));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error.message || error || "Something went wrong while deleting playlist."
+    );
+  }
+});
+
+const updatePlaylist = asyncHandler(async (req, res) => {
+  //TODO: update playlist
+  try {
+    const { playlistId } = req.params;
+    const { name, description } = req.body;
+    if (!playlistId || !name || !description) {
+      throw new ApiError(400, "Error either finding or updaing playlist.");
+    }
+
+    const playlist = await Playlist.findByIdAndUpdate(
+      playlistId,
+      { name, description },
+      { new: true }
+    );
+    if (!playlist) {
+      throw new ApiError(400, "Error either finding or updaing playlist.");
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, playlist, "Successfully updated playlist."));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error.message || error || "Something went wrong while updating playlist."
+    );
+  }
+});
+
 export {
   createPlaylist,
   getUserPlaylists,
   getPlaylistById,
   addVideoToPlaylist,
+  removeVideoFromPlaylist,
+  deletePlaylist,
+  updatePlaylist,
 };
