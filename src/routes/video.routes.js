@@ -5,7 +5,7 @@ import { publishAVideo } from "../controllers/video.controller.js";
 
 const router = Router();
 
-router.route("/uploadVideo").post(
+router.route("/publishVideo").post(
   verifyJWT,
   upload.fields([
     {
@@ -19,5 +19,7 @@ router.route("/uploadVideo").post(
   ]),
   publishAVideo
 );
+
+router.route("/search/:videoId").get(getVideoById);
 
 export default router;
