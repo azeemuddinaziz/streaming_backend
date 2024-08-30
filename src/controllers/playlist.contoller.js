@@ -14,10 +14,13 @@ const createPlaylist = asyncHandler(async (req, res) => {
     const playlist = await Playlist.create({
       name,
       description,
+      owner: req?.user,
     });
     if (!playlist) throw new ApiError(500, "Failed to create playlist.");
 
-    return res.status(200).json(new ApiResponse());
+    return res
+      .status(200)
+      .json(new ApiResponse(200, playlist, "Playlist created successfully"));
   } catch (error) {
     throw new ApiError(
       500,
@@ -26,4 +29,24 @@ const createPlaylist = asyncHandler(async (req, res) => {
   }
 });
 
-export { createPlaylist };
+const getUserPlaylists = asyncHandler(async (req, res) => {
+  //TODO: get user playlists
+  try {
+    const { userId } = req.params;
+    if (!userId) throw new ApiError(400, "userId is required.");
+
+    const playlists = await Playlist.find({ owner: userId });
+    if (!playlists) throw new ApiError(400, "Error while finding playlists.");
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, playlists, "Playlists fetched successfully/"));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error.message || error || "Something went wrong while fetching playlsits."
+    );
+  }
+});
+
+export { createPlaylist, getUserPlaylists };
