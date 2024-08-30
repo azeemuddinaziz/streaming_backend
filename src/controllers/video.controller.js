@@ -1,6 +1,9 @@
 import { Video } from "../models/video.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadFileOnCloudinary } from "../services/cloudinary.js";
+import {
+  deleteFilesOnCloudinary,
+  uploadFileOnCloudinary,
+} from "../services/cloudinary.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
@@ -58,4 +61,41 @@ const getVideoById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { video }, "Video fetched successfully!"));
 });
 
-export { publishAVideo };
+const updateVideo = asyncHandler(async (req, res) => {
+  //TODO: update video details like title, description, thumbnail
+  try {
+    const { videoId } = req.params;
+    const { title, description } = req.body;
+
+    const video = await Video.findById(videoId);
+
+    if (!video) throw new ApiError(404, "Video not found!");
+
+    if (title && title !== video.title) {
+      video.title = title.trim();
+    }
+
+    if (description && description !== video.description) {
+      video.description = description.trim();
+    }
+
+    let cloudinaryThumbnail;
+    if (req?.file?.path) {
+      cloudinaryThumbnail = await uploadFileOnCloudinary(req.file.path);
+      await deleteFilesOnCloudinary(video.thumbnail, "image");
+      if (cloudinaryThumbnail !== video.thumbnail) {
+        video.thumbnail = cloudinaryThumbnail.url;
+      }
+    }
+
+    await video.save();
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, video, "Details updated successfully."));
+  } catch (error) {
+    throw new ApiError(500, error || "Something went wrong.");
+  }
+});
+
+export { publishAVideo, getVideoById, updateVideo };

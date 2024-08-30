@@ -22,4 +22,8 @@ router.route("/publishVideo").post(
 
 router.route("/search/:videoId").get(getVideoById);
 
+router
+  .route("/edit/:videoId")
+  .post(verifyJWT, upload.single("thumbnail"), updateVideo);
+
 export default router;
