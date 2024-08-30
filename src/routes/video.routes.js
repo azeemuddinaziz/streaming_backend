@@ -28,4 +28,8 @@ router
 
 router.route("/delete/:videoId").post(verifyJWT, deleteVideo);
 
+router
+  .route("/togglePublishStatus/:videoId")
+  .post(verifyJWT, togglePublishStatus);
+
 export default router;
