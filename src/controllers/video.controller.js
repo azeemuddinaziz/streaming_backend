@@ -98,4 +98,28 @@ const updateVideo = asyncHandler(async (req, res) => {
   }
 });
 
-export { publishAVideo, getVideoById, updateVideo };
+const deleteVideo = asyncHandler(async (req, res) => {
+  //TODO: delete video
+  try {
+    const { videoId } = req.params;
+
+    const video = await Video.findById(videoId);
+
+    if (!video) throw new ApiError(404, "Video not found.");
+
+    console.log(video.videoFile, video.thumbnail);
+
+    await deleteFilesOnCloudinary(video.videoFile, "video");
+    await deleteFilesOnCloudinary(video.thumbnail, "image");
+
+    await Video.deleteOne({ _id: videoId });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Video deleted successfully."));
+  } catch (error) {
+    throw new ApiError(500, error || "Something went wrong.");
+  }
+});
+
+export { publishAVideo, getVideoById, updateVideo, deleteVideo };

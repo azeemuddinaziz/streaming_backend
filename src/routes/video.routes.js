@@ -26,4 +26,6 @@ router
   .route("/edit/:videoId")
   .post(verifyJWT, upload.single("thumbnail"), updateVideo);
 
+router.route("/delete/:videoId").post(verifyJWT, deleteVideo);
+
 export default router;
