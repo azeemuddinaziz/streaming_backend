@@ -25,4 +25,26 @@ const createTweet = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTweet };
+const getUserTweets = asyncHandler(async (req, res) => {
+  // TODO: get user tweets
+  try {
+    const { userId } = req.params;
+
+    if (!userId) throw new ApiError(400, "UserId is required.");
+
+    const tweets = await Tweet.find({ owner: userId });
+
+    if (!tweets) throw new ApiError(404, "No tweets found.");
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, tweets, "Tweets fetched successfully."));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error || "Failed to fetch tweets, somehing went wrong."
+    );
+  }
+});
+
+export { createTweet, getUserTweets };
