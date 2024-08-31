@@ -30,8 +30,8 @@ router.route("/publishVideo").post(
 router.route("/search/:videoId").get(getVideoById);
 
 router
-  .patch("/edit/:videoId")
-  .post(verifyJWT, upload.single("thumbnail"), updateVideo);
+  .route("/edit/:videoId")
+  .patch(verifyJWT, upload.single("thumbnail"), updateVideo);
 
 router.route("/delete/:videoId").delete(verifyJWT, deleteVideo);
 

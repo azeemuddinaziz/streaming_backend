@@ -25,17 +25,9 @@ const toggleSubscription = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "Subscription removed successfully."));
     } else {
       // Document does not exist
-
-      const channel = await User.findById(channelId);
-      const subscriber = await User.findById(req.user?._id);
-
-      if (!channel || !subscriber) {
-        throw new ApiError(404, "Either Channel or Subscriber not found.");
-      }
-
       const subscirption = await Subscription.create({
-        subscriber,
-        channel,
+        subscriber: req.user?._id,
+        channel: channelId,
       });
 
       return res
