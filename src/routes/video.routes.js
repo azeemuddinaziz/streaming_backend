@@ -12,6 +12,10 @@ import {
 
 const router = Router();
 
+router.route("/results").get(getAllVideos);
+router.route("/search/:videoId").get(getVideoById);
+
+//secured routes
 router.route("/publishVideo").post(
   verifyJWT,
   upload.fields([
@@ -26,19 +30,12 @@ router.route("/publishVideo").post(
   ]),
   publishAVideo
 );
-
-router.route("/search/:videoId").get(getVideoById);
-
 router
   .route("/edit/:videoId")
   .patch(verifyJWT, upload.single("thumbnail"), updateVideo);
-
 router.route("/delete/:videoId").delete(verifyJWT, deleteVideo);
-
 router
   .route("/togglePublishStatus/:videoId")
   .patch(verifyJWT, togglePublishStatus);
-
-router.route("/results").get(getAllVideos);
 
 export default router;

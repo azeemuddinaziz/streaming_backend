@@ -12,8 +12,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
   try {
     const {
       page = 1,
-      limit = 10,
-      query = {},
+      limit = 20,
+      query = "",
       sortBy = "_id",
       sortType = "asc",
       userId,
