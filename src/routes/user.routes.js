@@ -31,30 +31,21 @@ router.route("/register").post(
   ]),
   registerUser
 );
-
 router.route("/login").post(loginUser);
+router.route("/channel/:username").get(getUserChannelProfile);
 
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
-
 router.route("/refreshToken").post(refreshAccessToken);
-
 router.route("/changePassword").post(verifyJWT, changeCurrentPassword);
-
 router.route("/currentUser").get(verifyJWT, getCurrentUser);
-
 router.route("/updateAccountDetails").patch(verifyJWT, upadateAccountDetails);
-
 router
   .route("/updateAvatar")
   .patch(verifyJWT, upload.single("avatar"), updateAvatar);
-
 router
   .route("/updateCoverImage")
   .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
-
-router.route("/channel/:username").get(verifyJWT, getUserChannelProfile);
-
 router.route("/watch-history").get(verifyJWT, getWatchHistory);
 
 export default router;
