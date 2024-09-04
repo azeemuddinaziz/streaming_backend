@@ -8,6 +8,9 @@ const toggleSubscription = asyncHandler(async (req, res) => {
   // TODO: toggle subscription
   const { channelId } = req.params;
 
+  if (req.user._id.toString() === channelId)
+    throw new ApiError(400, "Owner cannot subscribe their own channel");
+
   //subscribed remove document.
   try {
     const subscirption = await Subscription.findOne({
@@ -87,9 +90,9 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     const subscriber = await User.findById(subscriberId);
     if (!subscriber) throw new ApiError(400, "Subscriber not found.");
 
-    const channelList = await Subscription.find({ subscriber }).select(
-      "-subscriber"
-    );
+    const channelList = await Subscription.find({ subscriber })
+      .select("-subscriber")
+      .populate("channel", "-password");
     if (!channelList) throw new ApiError(500, "Could not fetch subscriptions.");
 
     return res

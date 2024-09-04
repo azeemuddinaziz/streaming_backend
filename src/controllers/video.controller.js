@@ -92,7 +92,10 @@ const getVideoById = asyncHandler(async (req, res) => {
   //TODO: get video by id
   const { videoId } = req.params;
 
-  const video = await Video.findById(videoId);
+  const video = await Video.findById(videoId).populate(
+    "owner",
+    "-password -refreshToken"
+  );
   if (!video) throw new ApiError(404, "Video was not found!");
 
   return res

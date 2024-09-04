@@ -6,7 +6,6 @@ import ApiError from "../utils/ApiError.js";
 const createTweet = asyncHandler(async (req, res) => {
   try {
     const { content } = req.body;
-    console.log(req.body);
 
     if (!content) throw new ApiError(400, "The fields are required.");
 
