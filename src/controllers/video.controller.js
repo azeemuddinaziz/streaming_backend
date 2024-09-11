@@ -8,7 +8,6 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
-  //TODO: get all videos based on query, sort, pagination
   try {
     const {
       page = 1,
@@ -16,18 +15,36 @@ const getAllVideos = asyncHandler(async (req, res) => {
       query = "",
       sortBy = "_id",
       sortType = "asc",
-      userId,
     } = req.query;
+
+    const matchStage = {
+      $match: {
+        $or: [
+          { title: { $regex: query, $options: "i" } },
+          { description: { $regex: query, $options: "i" } },
+          { "ownerDetails.username": { $regex: query, $options: "i" } },
+          { "ownerDetails.fullname": { $regex: query, $options: "i" } },
+          // Add more fields here as needed
+        ],
+      },
+    };
 
     const pipeline = [
       {
-        $match: {
-          $or: [
-            { title: { $regex: query, $options: "i" } },
-            { description: { $regex: query, $options: "i" } },
-          ],
+        $lookup: {
+          from: "users",
+          localField: "owner",
+          foreignField: "_id",
+          as: "ownerDetails",
         },
       },
+      {
+        $unwind: {
+          path: "$ownerDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      matchStage,
       { $sort: { [sortBy]: sortType === "asc" ? 1 : -1 } },
     ];
 
