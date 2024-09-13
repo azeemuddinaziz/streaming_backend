@@ -229,8 +229,9 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
-  if (!isPasswordCorrect)
+  if (!isPasswordCorrect) {
     throw new ApiError(401, "Invalid password! Access denied.");
+  }
 
   user.password = newPassword;
 
