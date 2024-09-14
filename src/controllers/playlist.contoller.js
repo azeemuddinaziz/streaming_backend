@@ -52,7 +52,13 @@ const getPlaylistById = asyncHandler(async (req, res) => {
     const { playlistId } = req.params;
     if (!playlistId) throw new ApiError(400, "playlistId is required.");
 
-    const playlist = await Playlist.find({ _id: playlistId });
+    const playlist = await Playlist.findById({ _id: playlistId }).populate({
+      path: "videos",
+      populate: {
+        path: "owner",
+        model: "User",
+      },
+    });
     if (!playlist) throw new ApiError(400, "Error while finding playlists.");
 
     return res
@@ -69,13 +75,14 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
   try {
     const { playlistId, videoId } = req.params;
+
     if (!playlistId || !videoId) {
       throw new ApiError(400, "PlaylistId and VideoId are required.");
     }
 
     const playlist = await Playlist.findByIdAndUpdate(
       playlistId,
-      { $push: { videos: videoId } },
+      { $addToSet: { videos: videoId } },
       { new: true }
     );
     if (!playlist) {
@@ -154,21 +161,28 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 });
 
 const updatePlaylist = asyncHandler(async (req, res) => {
-  //TODO: update playlist
   try {
     const { playlistId } = req.params;
     const { name, description } = req.body;
-    if (!playlistId || !name || !description) {
-      throw new ApiError(400, "Error either finding or updaing playlist.");
+
+    if (!playlistId) {
+      throw new ApiError(400, "playlistId is required.");
     }
 
-    const playlist = await Playlist.findByIdAndUpdate(
-      playlistId,
-      { name, description },
-      { new: true }
-    );
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (description) updateData.description = description;
+
+    if (Object.keys(updateData).length === 0) {
+      throw new ApiError(400, "No fields provided to update.");
+    }
+
+    const playlist = await Playlist.findByIdAndUpdate(playlistId, updateData, {
+      new: true,
+    });
+
     if (!playlist) {
-      throw new ApiError(400, "Error either finding or updaing playlist.");
+      throw new ApiError(400, "Error either finding or updating playlist.");
     }
 
     return res
