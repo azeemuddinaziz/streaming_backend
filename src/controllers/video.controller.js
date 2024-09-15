@@ -115,10 +115,11 @@ const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const currentUserId = req.user._id;
 
-  const video = await Video.findById(videoId).populate(
-    "owner",
-    "-password -refreshToken"
-  );
+  const video = await Video.findByIdAndUpdate(
+    videoId,
+    { $inc: { views: 1 } },
+    { new: true }
+  ).populate("owner", "-password -refreshToken");
 
   if (!video) throw new ApiError(404, "Video was not found!");
 
