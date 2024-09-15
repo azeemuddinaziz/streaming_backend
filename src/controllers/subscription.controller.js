@@ -5,7 +5,6 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const toggleSubscription = asyncHandler(async (req, res) => {
-  // TODO: toggle subscription
   const { channelId } = req.params;
 
   if (req.user._id.toString() === channelId)

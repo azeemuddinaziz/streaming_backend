@@ -25,7 +25,6 @@ const createTweet = asyncHandler(async (req, res) => {
 });
 
 const getUserTweets = asyncHandler(async (req, res) => {
-  // TODO: get user tweets
   try {
     const { userId } = req.params;
 
@@ -47,7 +46,6 @@ const getUserTweets = asyncHandler(async (req, res) => {
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
-  //TODO: update tweet
   try {
     const { content } = req.body;
     const { tweetId } = req.params;
@@ -74,7 +72,6 @@ const updateTweet = asyncHandler(async (req, res) => {
 });
 
 const deleteTweet = asyncHandler(async (req, res) => {
-  //TODO: delete tweet
   try {
     const { tweetId } = req.params;
 

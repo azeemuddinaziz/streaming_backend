@@ -4,7 +4,6 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
-  //TODO: toggle like on video
   try {
     const { videoId } = req.params;
     if (!videoId) throw new ApiError(400, "videoId is required.");
@@ -37,7 +36,6 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 });
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
-  //TODO: toggle like on comment
   try {
     const { commentId } = req.params;
     if (!commentId) throw new ApiError(400, "commentId is required.");
@@ -70,7 +68,6 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 });
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
-  //TODO: toggle like on tweet
   try {
     const { tweetId } = req.params;
     if (!tweetId) throw new ApiError(400, "tweetId is required.");
@@ -103,8 +100,6 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-  //TODO: get all liked videos
-
   try {
     const likedVideos = await Like.find({ likedBy: req.user?._id });
     if (!likedVideos) throw new ApiError(404, "Liked videos not found.");

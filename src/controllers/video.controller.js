@@ -74,8 +74,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
-  // TODO: get video, upload to cloudinary, create video
-
   //verify loginned or not //middleware will do this.
   //all fields in form, text - direct, files-multr-cloudinary (video, thumbnail)
   //User.create("Video")- command to create new video document
@@ -116,7 +114,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
 });
 
 const getVideoById = asyncHandler(async (req, res) => {
-  //TODO: get video by id
   const { videoId } = req.params;
 
   const video = await Video.findById(videoId).populate(
@@ -131,7 +128,6 @@ const getVideoById = asyncHandler(async (req, res) => {
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
-  //TODO: update video details like title, description, thumbnail
   try {
     const { videoId } = req.params;
     const { title, description } = req.body;
@@ -168,7 +164,6 @@ const updateVideo = asyncHandler(async (req, res) => {
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {
-  //TODO: delete video
   try {
     const { videoId } = req.params;
 

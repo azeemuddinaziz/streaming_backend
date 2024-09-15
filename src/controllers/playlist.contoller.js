@@ -4,7 +4,6 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const createPlaylist = asyncHandler(async (req, res) => {
-  //TODO: create playlist
   try {
     const { name, description } = req.body;
     if (!name) throw new ApiError(400, "Name field is required.");
@@ -28,7 +27,6 @@ const createPlaylist = asyncHandler(async (req, res) => {
 });
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
-  //TODO: get user playlists
   try {
     const { userId } = req.params;
     if (!userId) throw new ApiError(400, "userId is required.");
@@ -105,7 +103,6 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 });
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
-  // TODO: remove video from playlist
   try {
     const { playlistId, videoId } = req.params;
     if (!playlistId || !videoId) {
@@ -141,7 +138,6 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 });
 
 const deletePlaylist = asyncHandler(async (req, res) => {
-  // TODO: delete playlist
   try {
     const { playlistId } = req.params;
 
