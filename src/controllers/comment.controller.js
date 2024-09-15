@@ -1,5 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Comment } from "../models/comment.model.js";
+import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
@@ -14,6 +15,12 @@ const getVideoComments = asyncHandler(async (req, res) => {
       Comment.aggregate({ $match: { video: videoId } }),
       options
     );
+
+    await User.populate(comments.docs, {
+      path: "owner",
+    });
+
+    console.log(comments);
 
     return res
       .status(200)
