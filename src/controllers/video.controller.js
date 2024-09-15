@@ -6,6 +6,7 @@ import {
 } from "../services/cloudinary.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import mongoose from "mongoose";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   try {
@@ -17,6 +18,9 @@ const getAllVideos = asyncHandler(async (req, res) => {
       sortType = "asc",
     } = req.query;
 
+    // Check if the query is a valid ObjectId
+    const isObjectId = mongoose.Types.ObjectId.isValid(query);
+
     const matchStage = {
       $match: {
         $or: [
@@ -24,11 +28,15 @@ const getAllVideos = asyncHandler(async (req, res) => {
           { description: { $regex: query, $options: "i" } },
           { "ownerDetails.username": { $regex: query, $options: "i" } },
           { "ownerDetails.fullname": { $regex: query, $options: "i" } },
+          ...(isObjectId
+            ? [{ "ownerDetails._id": new mongoose.Types.ObjectId(query) }]
+            : []),
           // Add more fields here as needed
         ],
       },
     };
 
+    console.log(isObjectId);
     const pipeline = [
       {
         $lookup: {
@@ -54,6 +62,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
       Video.aggregate(pipeline),
       options
     );
+
+    console.log(videos);
 
     return res
       .status(200)
