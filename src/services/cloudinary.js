@@ -16,6 +16,7 @@ const uploadFileOnCloudinary = async (localFilePath) => {
 
     // Upload file to Cloudinary
     const response = await cloudinary.uploader.upload(localFilePath, {
+      asset_folder: "streaming_app",
       resource_type: "auto",
     });
 
