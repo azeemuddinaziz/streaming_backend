@@ -4,7 +4,6 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
-  //TODO: get all comments for a video
   try {
     const { videoId } = req.params;
     const { page = 1, limit = 10 } = req.query;
@@ -36,7 +35,6 @@ const getVideoComments = asyncHandler(async (req, res) => {
 });
 
 const addComment = asyncHandler(async (req, res) => {
-  // TODO: add a comment to a video
   try {
     const { videoId } = req.params;
     const { content } = req.body;
@@ -71,7 +69,6 @@ const addComment = asyncHandler(async (req, res) => {
 });
 
 const updateComment = asyncHandler(async (req, res) => {
-  // TODO: update a comment
   try {
     const { commentId } = req.params;
     const { content } = req.body;
@@ -101,7 +98,6 @@ const updateComment = asyncHandler(async (req, res) => {
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
-  // TODO: delete a comment
   try {
     const { commentId } = req.params;
     if (!commentId) throw new ApiError(400, "commendId is required.");
