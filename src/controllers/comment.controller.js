@@ -20,8 +20,6 @@ const getVideoComments = asyncHandler(async (req, res) => {
       path: "owner",
     });
 
-    console.log(comments);
-
     return res
       .status(200)
       .json(
