@@ -13,9 +13,9 @@ import {
 const router = Router();
 
 router.route("/results").get(getAllVideos);
-router.route("/search/:videoId").get(getVideoById);
 
 //secured routes
+router.route("/search/:videoId").get(verifyJWT, getVideoById);
 router.route("/publishVideo").post(
   verifyJWT,
   upload.fields([

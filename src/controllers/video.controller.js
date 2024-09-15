@@ -7,6 +7,7 @@ import {
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
+import { Like } from "../models/like.model.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   try {
@@ -36,7 +37,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
       },
     };
 
-    console.log(isObjectId);
     const pipeline = [
       {
         $lookup: {
@@ -62,8 +62,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
       Video.aggregate(pipeline),
       options
     );
-
-    console.log(videos);
 
     return res
       .status(200)
@@ -115,16 +113,31 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const currentUserId = req.user._id;
 
   const video = await Video.findById(videoId).populate(
     "owner",
     "-password -refreshToken"
   );
+
   if (!video) throw new ApiError(404, "Video was not found!");
+
+  const like = await Like.findOne({ video: videoId, likedBy: currentUserId });
+
+  const videoResponse = {
+    ...video.toObject(),
+    isLiked: !!like,
+  };
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { video }, "Video fetched successfully!"));
+    .json(
+      new ApiResponse(
+        200,
+        { video: videoResponse },
+        "Video fetched successfully!"
+      )
+    );
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
