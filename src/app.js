@@ -12,6 +12,21 @@ app.use(
   })
 );
 
+import connectDB from "../src/db/connect.js";
+
+import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
+
+connectDB()
+  .then(() => {
+    app.on("Error", (error) => {
+      console.log("MongoDB connection error at express: ", error);
+    });
+  })
+  .catch((error) => {
+    console.log("MonogDB conenction FAILED: ", error);
+  });
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
