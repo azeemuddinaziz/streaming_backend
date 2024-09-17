@@ -6,7 +6,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://streaming-frontend-three.vercel.app",
+    origin: "https://streamsouk.azeemz.works",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
