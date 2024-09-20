@@ -35,8 +35,10 @@ app.use("/api/v1/like", likeRouter);
 app.use("/api/v1/comment", commentRouter);
 
 //Pinging server to stay awake.
+import axios from "axios";
+
 const url = `https://streaming-backend-y4ex.onrender.com/`;
-const interval = 30000;
+const interval = 600000; //10 minutes
 
 function reloadWebsite() {
   axios
