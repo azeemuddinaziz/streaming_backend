@@ -127,6 +127,7 @@ const loginUser = asyncHandler(async (req, res) => {
     httpOnly: true, // Fixed typo
     secure: true, // Required for SameSite=None
     sameSite: "None",
+    domain: "https://streaming-backend-y4ex.onrender.com/",
     maxAge: 24 * 60 * 60 * 1000, // Set maxAge (1 day, adjust as needed)
   };
 
