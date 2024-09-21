@@ -96,13 +96,6 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  //req body -> data
-  //username or email
-  //find the user
-  //password check ? access/refresh token : "not authorized, wrong password"
-  //set cookies
-  //response success login
-
   const { username, email, password } = req.body;
 
   if (!(username || email))
@@ -131,9 +124,10 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 
   const options = {
-    httpOnly: true,
-    secure: true,
+    httpOnly: true, // Fixed typo
+    secure: true, // Required for SameSite=None
     sameSite: "None",
+    maxAge: 24 * 60 * 60 * 1000, // Set maxAge (1 day, adjust as needed)
   };
 
   return res
