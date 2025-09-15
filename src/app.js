@@ -6,7 +6,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://streamsouk.azeemz.works",
+    origin: "https://streamsouk.azeemz.me",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
